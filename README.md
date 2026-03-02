@@ -7,6 +7,9 @@
 
 This project implements a complete **end-to-end Machine Learning regression system** to predict residential property prices using the Ames Housing dataset from OpenML.
 
+You can explore the interactive web app here:  
+👉 **Hosted Streamlit app:** `https://propertypriceprediction.streamlit.app/`
+
 The objective is to demonstrate a production-style ML workflow including:
 
 - Data cleaning and preprocessing  
@@ -117,19 +120,15 @@ Pipeline ensures:
 
 ## 📈 Model Evaluation
 
-Evaluation performed on original price scale (after reversing log transformation).
+The notebook and app both evaluate the model on a **held‑out validation set**:
 
-Metrics used:
+- **Train / validation split:** 80% training, 20% validation  
+- **Metrics (shown in the Streamlit app):**
+  - **Mean Absolute Error (MAE)** on the validation set  
+  - **R² score** on the validation set  
 
-- **MAE (Mean Absolute Error)**
-- **RMSE (Root Mean Squared Error)**
-- **R² Score**
-
-Additionally:
-
-- 5-Fold Cross Validation (R² scoring)
-
-This ensures the model generalizes well across unseen data.
+The Streamlit UI surfaces these metrics at the top of the page so you can see how the model performs for the current training setup.  
+For full, experiment‑level evaluation (cross‑validation, parameter sweeps, plots, etc.), see the Jupyter notebook in `notebooks/model_training.ipynb`.
 
 ---
 
@@ -166,23 +165,16 @@ These help evaluate prediction behavior and model interpretability.
 
 ---
 
-## 💾 Model Persistence
+## 💾 Model & Artifacts
 
-Saved artifacts:
+Saved artifacts (for local experimentation and deployment) include:
 
-| File | Description |
-|------|------------|
-| `ames_housing_model.joblib` | Best tuned pipeline |
-| `logistic_model.pkl` | Random Forest model |
-| `feature_columns.pkl` | Feature column order |
+| Path / File | Description |
+|-------------|------------|
+| `models/ames_housing_model.joblib` | Serialized model/pipeline trained on the Ames Housing dataset |
+| `notebooks/model_training.ipynb` | End‑to‑end training, feature engineering, and evaluation workflow |
 
-Saved using:
-
-
-joblib.dump()
-
-
-These files allow deployment without retraining.
+Model artifacts are created in the notebook using `joblib`/`scikit-learn` so you can reload and reuse the trained pipeline without retraining from scratch.
 
 ---
 
@@ -200,55 +192,79 @@ These files allow deployment without retraining.
 
 ---
 
-## 🚀 How to Run the Project
+## 🚀 How to Run the Project Locally
 
-### 1️⃣ Clone Repository
+### 1️⃣ Clone the repository
 
+```bash
 git clone <repository-link>
-cd <project-folder>
+cd Property_Price_Prediction
+```
 
+### 2️⃣ Create and activate a virtual environment
 
-### 2️⃣ Create Virtual Environment
+**Mac / Linux**
 
+```bash
 python -m venv venv
-
-
-Activate:
-
-Mac/Linux:
-
 source venv/bin/activate
+```
 
+**Windows (PowerShell / CMD)**
 
-Windows:
-
+```bash
+python -m venv venv
 venv\Scripts\activate
+```
 
+### 3️⃣ Install dependencies
 
-### 3️⃣ Install Dependencies
+All required packages are listed in `requirements.txt`:
 
-pip install pandas numpy matplotlib seaborn scikit-learn joblib
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
 
+### 4️⃣ Run the Streamlit app
 
-### 4️⃣ Run Notebook
-Open the `.ipynb` file in VS Code and run all cells sequentially.
+From the project root:
+
+```bash
+streamlit run app.py
+```
+
+This will start a local server and open the app in your browser (or you can visit `http://localhost:8501` manually).
+
+### 5️⃣ (Optional) Explore the training notebook
+
+To inspect the full training and evaluation pipeline:
+
+```bash
+jupyter notebook notebooks/model_training.ipynb
+```
+
+Run the cells sequentially to reproduce the preprocessing, model training, and evaluation flow.
 
 ---
 
 ## 📂 Project Structure
 
 ```text
-project/
+Property_Price_Prediction/
+│
+├── app.py                     # Streamlit web application
+├── requirements.txt           # Python dependencies
+├── README.md                  # Project documentation (this file)
+│
+├── data/
+│   └── AmesHousing.csv        # Raw Ames Housing dataset
 │
 ├── notebooks/
-│   └── ames_housing.ipynb
+│   └── model_training.ipynb   # End‑to‑end model training & evaluation
 │
-├── models/
-│   ├── ames_housing_model.joblib
-│   ├── logistic_model.pkl
-│   └── feature_columns.pkl
-│
-└── README.md
+└── models/
+    └── ames_housing_model.joblib   # Saved model/pipeline artifact
 ```
 
 
@@ -257,9 +273,8 @@ project/
 ## 📌 Future Improvements
 
 - Add Gradient Boosting / XGBoost comparison  
-- Deploy using Streamlit  
 - Add SHAP-based explainability  
-- Integrate REST API using FastAPI  
+- Integrate REST API using FastAPI
 - Automate feature selection  
 
 ---
